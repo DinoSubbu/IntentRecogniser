@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <unordered_map>
 #include <numeric>
+#include <string>
+
 typedef std::vector<std::string> words_vector;
 typedef struct {
     std::vector<std::string> referenceTexts;
@@ -13,30 +15,43 @@ typedef struct {
 intentDataset intent_dataset[] = {
     {
         {
-            "weather",
-            "rain",
-            "cloudy",
-            "sunny"
+            "what is weather like today",
+            "will it rain today",
+            "will it rain tomorrow",
+            "is it raining now",
+            "is it cloudy",
+            "is it sunny",
+            "is it hot today",
+            "what is temperature now"
         },
         "Get Weather"
     },
     {
         {
-            "weather in",
-            ""
+            "what is weather in paris today",
+            "what is weather in paris today",
+            "what is weather like today in new york",
+            "Will it rain in new york today",
+            "is it raining in new york today",
+            "is it cloudy in new york",
+            "sunny in Paris",
+            "what is temperature in paris"
         },
         "Get Weather City"
     },
     {
         {
-            "free",
-            ""
+            "am i free at 13:00 pm tomorrow",
+            "do i have meeting",
+            "do i have appointment",
+            "is there meeting"
         },
         "Check Calendar"
     },
     {
         {
-            "tell me a fact for today"
+            "tell me interesting fact",
+            "tell something about Germany"
         },
         "Get Fact"
     }
@@ -48,7 +63,7 @@ class IntentRecogniser {
     public:
         void getIntent(std::string input_text);
         void processInput(std::string& input_text);
-        void removeArticles(words_vector& input_text);
+        void removeArticles(std::string& input_text);
         void removePunctuations(std::string& input_text);
         void convertToLowerCase(std::string& input_text);
         unsigned int levenshteinDistance(std::string input, std::string reference);
@@ -100,10 +115,14 @@ words_vector IntentRecogniser::tokenize(std::string input_text) {
 }
 
 // Remove articles from the input string and returns updated string
-void IntentRecogniser::removeArticles(words_vector& input_words) {
+void IntentRecogniser::removeArticles(std::string& input_words) {
     for(std::string article: articles) {
-        auto new_end_position = std::remove(input_words.begin(), input_words.end(), article);
-        input_words.erase(new_end_position, input_words.end());
+        auto position = input_words.find(article);
+        if(position != std::string::npos) {
+            if(input_words[position-1] ==' ')
+                input_words.erase(position, article.length());
+            position = input_words.find(article);
+        }
     }
 }
 
@@ -118,8 +137,8 @@ unsigned int IntentRecogniser::levenshteinDistance(std::string input, std::strin
     
     std::vector<std::vector<unsigned int>> distanceMatrix;
     distanceMatrix.resize(input_length+1, std::vector<unsigned int>(reference_length+1));
-    /*for (size_t i = 0; i < input_length; i++ )
-        std::iota(distanceMatrix[i].begin(), distanceMatrix[i].end(), i* reference_length);*/
+    for (size_t i = 0; i < input_length; i++ )
+        std::iota(distanceMatrix[i].begin(), distanceMatrix[i].end(), i* reference_length);
     
     for(int i=0; i<= input_length; i++) {
         for(int j=0; j<= reference_length; j++) {
@@ -166,6 +185,7 @@ void IntentRecogniser::processInput(std::string& input_text) {
     removePunctuations(input_text);
     removeExtraSpaces(input_text);
     convertToLowerCase(input_text);
+    removeArticles(input_text);
     /*std::vector<std::string> tokenized_words = tokenize(input_text);
     removeArticles(tokenized_words);
     for(words_vector::const_iterator i = tokenized_words.begin(); i != tokenized_words.end(); ++i)
@@ -181,7 +201,10 @@ void IntentRecogniser::getIntent(std::string input_text) {
 
 int main() {
     IntentRecogniser intentrecogniser;
-    std::string input_text = " Tell me a fact for today ? ";
-    intentrecogniser.getIntent(input_text);
+    while(true) {
+        std::string input_text;
+        std::getline(std::cin, input_text);
+        intentrecogniser.getIntent(input_text);
+    }
     return 0;
 }
