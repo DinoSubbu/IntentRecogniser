@@ -18,7 +18,8 @@ intentDataset intent_dataset[] = {
         {
             "what is the weather in paris today",
             "what is the weather in stuttgart today",
-            "what is the weather like today in new york",
+            "what is the weather like in new york",
+            "Will it rain today in paris",
             "Will it rain in paris today",
             "is it raining in paris today",
             "is it cloudy in new york",
@@ -72,7 +73,7 @@ void IntentRecogniser::convertToLowerCase(std::string& input_text) {
     });
 }
 
-// Breaks down the input string to words and returns a vector of words
+// Breaks down the input string into words and returns a vector of words
 // Reserved for future use
 words_vector IntentRecogniser::tokenize(std::string input_text) {
     words_vector input_words;
@@ -95,8 +96,8 @@ words_vector IntentRecogniser::tokenize(std::string input_text) {
 
 // Calculates Levenshtein distance between two strings and returns the distance value
 unsigned int IntentRecogniser::levenshteinDistance(std::string input, std::string reference) {
-    const int input_length = input.length();
-    const int reference_length = reference.length();
+    const std::size_t input_length = input.length();
+    const std::size_t reference_length = reference.length();
 
     if(input_length == 0) 
         return reference_length;
@@ -108,8 +109,8 @@ unsigned int IntentRecogniser::levenshteinDistance(std::string input, std::strin
     for (size_t i = 0; i < input_length; i++ )
         std::iota(distanceMatrix[i].begin(), distanceMatrix[i].end(), i* reference_length);
     
-    for(int i=0; i<= input_length; i++) {
-        for(int j=0; j<= reference_length; j++) {
+    for(std::size_t i=0; i<= input_length; i++) {
+        for(std::size_t j=0; j<= reference_length; j++) {
             // Empty input string
             if(i==0)
                 distanceMatrix[i][j] = j;
@@ -155,7 +156,6 @@ void IntentRecogniser::processInput(std::string& input_text) {
     removePunctuations(input_text);
     convertToLowerCase(input_text);
     removeExtraSpaces(input_text);
-    /*std::vector<std::string> tokenized_words = tokenize(input_text);*/
 }
 
 

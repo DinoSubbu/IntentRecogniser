@@ -62,7 +62,7 @@ TEST(InputPreprocessing, GetIntentFunctionCheck) {
 	intent = intent_recogniser.getIntent(test_input);
 	ASSERT_EQ(intent, "Check Calendar");
 
-	test_input = "Do I have a meedting at 11 am tommorrow? ";
+	test_input = "Doo I haave a meedting at 11 am tommorrow? ";
 	intent = intent_recogniser.getIntent(test_input);
 	ASSERT_EQ(intent, "Check Calendar");
 }

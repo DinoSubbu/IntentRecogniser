@@ -12,6 +12,7 @@ typedef struct {
     std::string intent;
 } intentDataset;
 
+// Class containing functions to process input string and return intent
 class IntentRecogniser {
 private:
     std::string articles[3] = { " a", " an", " the" };
