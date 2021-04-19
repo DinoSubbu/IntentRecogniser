@@ -58,10 +58,6 @@ TEST(InputPreprocessing, GetIntentFunctionCheck) {
 	intent = intent_recogniser.getIntent(test_input);
 	ASSERT_EQ(intent, "Get Weather City");
 
-	test_input = " what is a the    weather today ? ";
-	intent = intent_recogniser.getIntent(test_input);
-	ASSERT_EQ(intent, "Get Weather");
-
 	test_input = "Do I have a meeting at 11 am tomorrow? ";
 	intent = intent_recogniser.getIntent(test_input);
 	ASSERT_EQ(intent, "Check Calendar");

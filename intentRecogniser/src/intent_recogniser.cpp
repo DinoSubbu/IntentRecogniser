@@ -1,7 +1,5 @@
 #include "intent_recogniser.hpp"
 
-
-
 intentDataset intent_dataset[] = {
     {
         {
@@ -12,19 +10,19 @@ intentDataset intent_dataset[] = {
             "is it cloudy",
             "is it sunny",
             "is it hot today",
-            "what is the temperature now"
+            "what is the temperature like today"
         },
         "Get Weather"
     },
     {
         {
             "what is the weather in paris today",
-            "what is the weather in paris today",
+            "what is the weather in stuttgart today",
             "what is the weather like today in new york",
-            "Will it rain in new york today",
-            "is it raining in new york today",
+            "Will it rain in paris today",
+            "is it raining in paris today",
             "is it cloudy in new york",
-            "sunny in Paris",
+            "is it sunny in Paris",
             "what is the temperature in paris"
         },
         "Get Weather City"
@@ -34,19 +32,20 @@ intentDataset intent_dataset[] = {
             "am i free at 13:00 pm tomorrow",
             "do i have a meeting",
             "do i have an appointment",
-            "is there a meeting"
+            "is there a meeting",
+            "is my calendar free tomorrow"
         },
         "Check Calendar"
     },
     {
         {
-            "tell me an interesting fact",
+            "tell me a fact",
+            "tell an interesting fact",
             "tell something about Germany"
         },
         "Get Fact"
     }
 };
-
 
 
 // Removes extra spaces from input string and returns updated string
@@ -74,6 +73,7 @@ void IntentRecogniser::convertToLowerCase(std::string& input_text) {
 }
 
 // Breaks down the input string to words and returns a vector of words
+// Reserved for future use
 words_vector IntentRecogniser::tokenize(std::string input_text) {
     words_vector input_words;
     std::string word = "";
@@ -93,6 +93,7 @@ words_vector IntentRecogniser::tokenize(std::string input_text) {
     return input_words;
 }
 
+// Calculates Levenshtein distance between two strings and returns the distance value
 unsigned int IntentRecogniser::levenshteinDistance(std::string input, std::string reference) {
     const int input_length = input.length();
     const int reference_length = reference.length();
@@ -133,6 +134,8 @@ unsigned int IntentRecogniser::levenshteinDistance(std::string input, std::strin
     return distanceMatrix[input_length][reference_length];
 }
 
+
+// Finds best matching intent for the input string and returns the intent
 std::string IntentRecogniser::bestIntentMatch(std::string input_text){
     std::unordered_map<std::string, unsigned int> minLevDistances;
     for(auto intent: intent_dataset) {
@@ -147,31 +150,16 @@ std::string IntentRecogniser::bestIntentMatch(std::string input_text){
     return lowestValueIndex->first;
 }
 
-// Processes input string
+// Processes input string by removing uppercases, punctuations & extra spaces
 void IntentRecogniser::processInput(std::string& input_text) {
     removePunctuations(input_text);
     convertToLowerCase(input_text);
     removeExtraSpaces(input_text);
-    /*std::vector<std::string> tokenized_words = tokenize(input_text);
-    removeArticles(tokenized_words);
-    for(words_vector::const_iterator i = tokenized_words.begin(); i != tokenized_words.end(); ++i)
-        std::cout << *i;*/
+    /*std::vector<std::string> tokenized_words = tokenize(input_text);*/
 }
 
 
 std::string IntentRecogniser::getIntent(std::string input_text) {
     processInput(input_text);
     return bestIntentMatch(input_text);
-    //std::cout<<input_text.c_str()<<std::endl;
 }
-
-/*
-int main() {
-    IntentRecogniser intentrecogniser;
-    while(true) {
-        std::string input_text;
-        std::getline(std::cin, input_text);
-        intentrecogniser.getIntent(input_text);
-    }
-    return 0;
-}*/
