@@ -1,77 +1,53 @@
-//#include "intent_recogniser.hpp"
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <unordered_map>
-#include <numeric>
-#include <string>
+#include "intent_recogniser.hpp"
 
-typedef std::vector<std::string> words_vector;
-typedef struct {
-    std::vector<std::string> referenceTexts;
-    std::string intent;
-} intentDataset;
+
 
 intentDataset intent_dataset[] = {
     {
         {
-            "what is weather like today",
+            "what is the weather like today",
             "will it rain today",
             "will it rain tomorrow",
             "is it raining now",
             "is it cloudy",
             "is it sunny",
             "is it hot today",
-            "what is temperature now"
+            "what is the temperature now"
         },
         "Get Weather"
     },
     {
         {
-            "what is weather in paris today",
-            "what is weather in paris today",
-            "what is weather like today in new york",
+            "what is the weather in paris today",
+            "what is the weather in paris today",
+            "what is the weather like today in new york",
             "Will it rain in new york today",
             "is it raining in new york today",
             "is it cloudy in new york",
             "sunny in Paris",
-            "what is temperature in paris"
+            "what is the temperature in paris"
         },
         "Get Weather City"
     },
     {
         {
             "am i free at 13:00 pm tomorrow",
-            "do i have meeting",
-            "do i have appointment",
-            "is there meeting"
+            "do i have a meeting",
+            "do i have an appointment",
+            "is there a meeting"
         },
         "Check Calendar"
     },
     {
         {
-            "tell me interesting fact",
+            "tell me an interesting fact",
             "tell something about Germany"
         },
         "Get Fact"
     }
 };
 
-class IntentRecogniser {
-    private:
-        std::string articles[3] = {"a", "an", "the"};
-    public:
-        void getIntent(std::string input_text);
-        void processInput(std::string& input_text);
-        void removeArticles(std::string& input_text);
-        void removePunctuations(std::string& input_text);
-        void convertToLowerCase(std::string& input_text);
-        unsigned int levenshteinDistance(std::string input, std::string reference);
-        std::string bestIntentMatch(std::string input_text);
-        words_vector tokenize(std::string input_text);
-        void removeExtraSpaces(std::string& input_text);
 
-};
 
 // Removes extra spaces from input string and returns updated string
 void IntentRecogniser::removeExtraSpaces(std::string& input_text) {
@@ -79,6 +55,9 @@ void IntentRecogniser::removeExtraSpaces(std::string& input_text) {
         return ((left == right) && (left == ' '));
     });
     input_text.erase(new_end_position, input_text.end());
+    while (input_text[0] == ' ') {
+        input_text.erase(0,1);
+    }
 }
 
 // Removes punctuation marks from input string and returns updated string
@@ -112,18 +91,6 @@ words_vector IntentRecogniser::tokenize(std::string input_text) {
     if(word!="")
         input_words.push_back(word);
     return input_words;
-}
-
-// Remove articles from the input string and returns updated string
-void IntentRecogniser::removeArticles(std::string& input_words) {
-    for(std::string article: articles) {
-        auto position = input_words.find(article);
-        if(position != std::string::npos) {
-            if(input_words[position-1] ==' ')
-                input_words.erase(position, article.length());
-            position = input_words.find(article);
-        }
-    }
 }
 
 unsigned int IntentRecogniser::levenshteinDistance(std::string input, std::string reference) {
@@ -183,9 +150,8 @@ std::string IntentRecogniser::bestIntentMatch(std::string input_text){
 // Processes input string
 void IntentRecogniser::processInput(std::string& input_text) {
     removePunctuations(input_text);
-    removeExtraSpaces(input_text);
     convertToLowerCase(input_text);
-    removeArticles(input_text);
+    removeExtraSpaces(input_text);
     /*std::vector<std::string> tokenized_words = tokenize(input_text);
     removeArticles(tokenized_words);
     for(words_vector::const_iterator i = tokenized_words.begin(); i != tokenized_words.end(); ++i)
@@ -193,12 +159,13 @@ void IntentRecogniser::processInput(std::string& input_text) {
 }
 
 
-void IntentRecogniser::getIntent(std::string input_text) {
+std::string IntentRecogniser::getIntent(std::string input_text) {
     processInput(input_text);
-    std::cout<<bestIntentMatch(input_text)<<std::endl;
+    return bestIntentMatch(input_text);
     //std::cout<<input_text.c_str()<<std::endl;
 }
 
+/*
 int main() {
     IntentRecogniser intentrecogniser;
     while(true) {
@@ -207,4 +174,4 @@ int main() {
         intentrecogniser.getIntent(input_text);
     }
     return 0;
-}
+}*/

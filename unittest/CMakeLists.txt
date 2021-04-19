@@ -5,7 +5,7 @@ file(GLOB_RECURSE Sources CONFIGURE_DEPENDS "*.cpp")
 add_executable(Unittest ${Sources})
 target_link_libraries(Unittest PUBLIC
     gtest_main
-    Intent_Recogniser
+    Intent_RecogniserLib
 )
 
 add_test(
