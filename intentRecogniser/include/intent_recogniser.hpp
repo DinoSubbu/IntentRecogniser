@@ -1,3 +1,6 @@
+#ifndef INTENT_RECOGNISER_HPP
+#define INTENT_RECOGNISER_HPP
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -28,3 +31,5 @@ public:
     
     words_vector tokenize(std::string input_text);
 };
+
+#endif
